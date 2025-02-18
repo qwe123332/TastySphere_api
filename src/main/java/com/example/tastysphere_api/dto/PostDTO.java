@@ -20,6 +20,8 @@ public class PostDTO {
 
     private String username;
 
+    private String userAvatar;
+
     @NotBlank(message = "Content cannot be empty")
     @Size(min = 1, max = 5000, message = "Content must be between 1 and 5000 characters")
     private String content;

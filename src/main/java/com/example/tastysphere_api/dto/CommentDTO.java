@@ -14,6 +14,4 @@ public class CommentDTO {
     private Long dishId;
     private String createdAt;
     private String updatedAt;
-
-
 }

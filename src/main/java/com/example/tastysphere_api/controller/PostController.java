@@ -1,6 +1,6 @@
 package com.example.tastysphere_api.controller;
 
-import com.example.tastysphere_api.dto.CustomUserDetails;
+
 import com.example.tastysphere_api.dto.PostDTO;
 import com.example.tastysphere_api.entity.Post;
 import com.example.tastysphere_api.entity.User;
@@ -36,18 +36,18 @@ public class PostController {
     public ResponseEntity<Page<PostDTO>> getPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @AuthenticationPrincipal CustomUserDetails user) {
-        return ResponseEntity.ok(postService.getPosts(user.getUser(), PageRequest.of(page, size)));
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(postService.getPosts(user, PageRequest.of(page, size)));
     }
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostDTO> getPost(
             @PathVariable Long postId,
-            @AuthenticationPrincipal CustomUserDetails user) {
+            @AuthenticationPrincipal User user) {
         PostDTO postDTO = postService.getPost(postId);
         if (user != null) {
             Post post = postRepository.findById(postId).orElseThrow();
-            recommendationService.recordUserView(user.getUser().getId(), post);
+            recommendationService.recordUserView(user.getId(), post);
         }
         return ResponseEntity.ok(postDTO);
     }

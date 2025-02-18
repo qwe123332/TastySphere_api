@@ -2,13 +2,10 @@ package com.example.tastysphere_api.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Entity
 @Table(name = "users")
@@ -47,11 +44,6 @@ public class User {
     @Column(name = "is_active")
     private boolean active = true;
 
-    //getAvatar
-    public String getAvatar() {
-        return avatar;
-    }
-
     public User(String username, String password, Set<Role> roles) {
         this.username = username;
         this.password = password;
@@ -75,5 +67,8 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "role_id")
 )
 private Set<Role> roles = new HashSet<>();
+
+
+
 
 }

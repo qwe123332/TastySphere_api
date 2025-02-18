@@ -1,5 +1,6 @@
 package com.example.tastysphere_api.controller;
 
+import com.example.tastysphere_api.dto.CustomUserDetails;
 import com.example.tastysphere_api.entity.Comment;
 import com.example.tastysphere_api.entity.User;
 import com.example.tastysphere_api.service.SocialService;
@@ -35,11 +36,11 @@ public class SocialController {
             @PathVariable Long postId,
             @RequestParam(required = false) Long parentId,
             @RequestParam String content,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         // 频率限制检查
-        String key = "comment_limit:" + user.getId();
+        String key = "comment_limit:" + user.getUser().getId();
         String count = redisTemplate.opsForValue().get(key);
-        if (Integer.parseInt(count) >= 10) {
+        if (count != null && Integer.parseInt(count) >= 10) {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "评论次数超过限制，请稍后再试");
         }
 
@@ -50,23 +51,23 @@ public class SocialController {
         // 敏感词过滤
         String filteredContent = sensitiveWordService.filterContent(content);
         
-        return socialService.createComment(postId, parentId, filteredContent, user);
+        return socialService.createComment(postId, parentId, filteredContent, user.getUser());
     }
 
     @PostMapping("/posts/{postId}/like")
     public void toggleLike(
             @PathVariable Long postId,
-            @AuthenticationPrincipal User user) {
-        socialService.toggleLike(postId, user);
+            @AuthenticationPrincipal CustomUserDetails user) {
+        socialService.toggleLike(postId, user.getUser());
     }
 
     @PostMapping("/users/{userId}/follow")
     public void toggleFollow(
             @PathVariable Long userId,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal CustomUserDetails user) {
         User following = userService.getUserById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        socialService.toggleFollow(user, following);
+        socialService.toggleFollow(user.getUser(), following);
     }
 
     @GetMapping("/posts/{postId}/comments")

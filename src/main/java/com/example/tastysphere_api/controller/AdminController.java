@@ -1,5 +1,6 @@
 package com.example.tastysphere_api.controller;
 
+import com.example.tastysphere_api.dto.CustomUserDetails;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,8 @@ public class AdminController {
             @PathVariable Long postId,
             @RequestParam boolean approved,
             @RequestParam String reason,
-            @AuthenticationPrincipal User admin) {
-        adminService.auditPost(postId, approved, admin, reason);
+            @AuthenticationPrincipal CustomUserDetails admin) {
+        adminService.auditPost(postId, approved, admin.getUser(), reason);
         return ResponseEntity.ok().build();
     }
 

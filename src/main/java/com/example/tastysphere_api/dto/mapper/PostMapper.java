@@ -16,10 +16,12 @@ public interface PostMapper {
     @Mapping(target = "postId", source = "id")
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "userAvatar", source = "user.avatar")
     @Mapping(target = "content", source = "content")
     @Mapping(target = "commentCount", expression = "java(post.getComments() != null ? post.getComments().size() : 0)")
     @Mapping(target = "isLiked", ignore = true)  // Set in service layer
     @Mapping(target = "isMine", ignore = true)   // Set in service layer
+    @Mapping(target = "images",expression = "java(FormatUrl(post))") // Set in service layer
     @Mapping(target = "commentDTOs", source = "comments", qualifiedByName = "mapComments") // Ensure comments are mapped correctly
     PostDTO toDTO(Post post);
 
@@ -45,6 +47,18 @@ public interface PostMapper {
         dto.setIsLiked(likedPostIds != null && likedPostIds.contains(post.getId()));
         return dto;
     }
+    default  List<String> FormatUrl(Post post){
+        List<String> images = post.getImages();
+        List<String> newImages = new ArrayList<>();
+        for (String image : images) {
+            if (!image.startsWith("http://") && !image.startsWith("https://")) {
+                newImages.add("http://192.168.146.133:888/posts/" + image);
+            } else {
+                newImages.add(image);
+
+            }
+        }
+        return newImages;}
 
     // Utility method to prevent null values
     @AfterMapping

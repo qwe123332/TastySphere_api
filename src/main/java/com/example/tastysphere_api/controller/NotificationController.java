@@ -1,7 +1,7 @@
 package com.example.tastysphere_api.controller;
 
+import com.example.tastysphere_api.dto.CustomUserDetails;
 import com.example.tastysphere_api.entity.Notification;
-import com.example.tastysphere_api.entity.User;
 import com.example.tastysphere_api.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,20 +17,20 @@ public class NotificationController {
 
     @GetMapping
     public Page<Notification> getNotifications(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal CustomUserDetails user,
             Pageable pageable) {
-        return notificationService.getUserNotifications(user.getId(), pageable);
+        return notificationService.getUserNotifications(user.getUser().getId(), pageable);
     }
 
     @PostMapping("/{notificationId}/read")
     public void markAsRead(
             @PathVariable Long notificationId,
-            @AuthenticationPrincipal User user) {
-        notificationService.markAsRead(notificationId, user.getId());
+            @AuthenticationPrincipal CustomUserDetails user) {
+        notificationService.markAsRead(notificationId, user.getUser().getId());
     }
 
     @GetMapping("/unread-count")
-    public long getUnreadCount(@AuthenticationPrincipal User user) {
-        return notificationService.getUnreadCount(user.getId());
+    public long getUnreadCount(@AuthenticationPrincipal CustomUserDetails user) {
+        return notificationService.getUnreadCount(user.getUser().getId());
     }
 } 
