@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findByPostId(Long postId, Pageable pageable);
     Page<Comment> findByParentCommentId(Long parentId, Pageable pageable);
+
+    Page<Comment> findByPostIdAndParentCommentIsNull(Long postId, Pageable pageable);
     
     @Modifying
     @Query("UPDATE Comment c SET c.likeCount = c.likeCount + :delta WHERE c.id = :commentId")

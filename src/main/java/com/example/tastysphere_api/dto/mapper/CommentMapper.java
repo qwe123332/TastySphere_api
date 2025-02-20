@@ -2,7 +2,6 @@ package com.example.tastysphere_api.dto.mapper;
 
 import com.example.tastysphere_api.dto.CommentDTO;
 import com.example.tastysphere_api.entity.Comment;
-import org.mapstruct.MapMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -11,7 +10,9 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 
 public interface CommentMapper {
-    @Mapping(target = "id", source = "post.id")
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "parentCommentId", source = "parentComment.id")
+    @Mapping(target = "replies", source = "replies")
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "username", source = "user.username")
     @Mapping(target = "userAvatar", source = "user.avatar")

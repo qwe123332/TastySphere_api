@@ -1,19 +1,22 @@
 package com.example.tastysphere_api.controller;
 
+import com.example.tastysphere_api.dto.CommentDTO;
 import com.example.tastysphere_api.dto.CustomUserDetails;
 import com.example.tastysphere_api.entity.Comment;
 import com.example.tastysphere_api.entity.User;
+import com.example.tastysphere_api.mapper.CommentMapper;
+import com.example.tastysphere_api.service.SensitiveWordService;
 import com.example.tastysphere_api.service.SocialService;
+import com.example.tastysphere_api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import com.example.tastysphere_api.service.UserService;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
-import com.example.tastysphere_api.service.SensitiveWordService;
-import org.springframework.data.redis.core.RedisTemplate;
+
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -30,6 +33,9 @@ public class SocialController {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    private CommentMapper commentMapper;
 
     @PostMapping("/posts/{postId}/comments")
     public Comment createComment(
@@ -71,16 +77,18 @@ public class SocialController {
     }
 
     @GetMapping("/posts/{postId}/comments")
-    public Page<Comment> getPostComments(
+    public Page<CommentDTO> getPostComments(
             @PathVariable Long postId,
             Pageable pageable) {
-        return socialService.getPostComments(postId, pageable);
+        return socialService.getPostComments(postId, pageable)
+                .map(commentMapper::toDTO);
     }
 
     @GetMapping("/comments/{commentId}/replies")
-    public Page<Comment> getCommentReplies(
+    public Page<CommentDTO> getCommentReplies(
             @PathVariable Long commentId,
             Pageable pageable) {
-        return socialService.getCommentReplies(commentId, pageable);
+        return socialService.getCommentReplies(commentId, pageable)
+                .map(commentMapper::toDTO);
     }
 }
