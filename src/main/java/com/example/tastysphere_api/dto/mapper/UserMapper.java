@@ -1,7 +1,6 @@
 package com.example.tastysphere_api.dto.mapper;
 
 import com.example.tastysphere_api.dto.UserDTO;
-
 import com.example.tastysphere_api.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,6 +15,10 @@ public interface UserMapper {
     @Mapping(target = "username", source = "username")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "phoneNumber", source = "phoneNumber")
+    @Mapping(target = "roles", source = "roles")
+    @Mapping(target = "active", source = "active")
+
+
     UserDTO toDTO(User user);
 
     default int getFollowersCount(User user) {

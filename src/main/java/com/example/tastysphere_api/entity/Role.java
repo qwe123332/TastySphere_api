@@ -1,7 +1,10 @@
 package com.example.tastysphere_api.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +15,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//角色区分普通用户、商家、管理员
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

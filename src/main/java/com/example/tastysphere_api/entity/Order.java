@@ -17,6 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//订单记录，关联用户、商家、订单详情
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

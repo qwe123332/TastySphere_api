@@ -2,11 +2,13 @@ package com.example.tastysphere_api.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "notifications")
 @Data
+//推送点赞、评论、订单状态等实时通知
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,6 +14,7 @@ import java.security.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//商家评价，关联商家和用户信息 独立于动态的商家评分（类似大众点评）
 public class MerchantReview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

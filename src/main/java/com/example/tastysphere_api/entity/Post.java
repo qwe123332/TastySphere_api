@@ -2,7 +2,10 @@ package com.example.tastysphere_api.entity;
 
 import com.example.tastysphere_api.util.StringListConverter;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -22,6 +25,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//动态内容，支持图文、视频、标记商家/商品
+// ✅ 确保 Post 实体类的属性和数据库表的字段一一对应
 public class Post {
 
     @Id

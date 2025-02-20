@@ -1,7 +1,10 @@
 package com.example.tastysphere_api.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,6 +16,8 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+// ✅ 确保 Comment 实体类的属性和数据库表的字段一一对应
+//嵌套评论结构（支持二级评论）
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

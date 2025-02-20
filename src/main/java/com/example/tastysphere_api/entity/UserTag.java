@@ -6,6 +6,8 @@ import lombok.Data;
 @Entity
 @Table(name = "user_tags")
 @Data
+// 用户标签，用于推荐系统
+//用户兴趣标签（如#川菜爱好者），用于推荐
 public class UserTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

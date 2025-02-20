@@ -1,5 +1,6 @@
 package com.example.tastysphere_api.dto;
 
+import com.example.tastysphere_api.entity.Role;
 import com.example.tastysphere_api.entity.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -48,6 +49,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;  // 凭据不过期
+    }
+
+    public List<Role> getroles() {
+        return user.getRoles();
     }
 
 

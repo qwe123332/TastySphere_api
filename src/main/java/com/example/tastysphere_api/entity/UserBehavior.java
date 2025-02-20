@@ -2,11 +2,13 @@ package com.example.tastysphere_api.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_behaviors")
 @Data
+//记录用户浏览、点赞、搜索行为，用于推荐算法
 public class UserBehavior {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

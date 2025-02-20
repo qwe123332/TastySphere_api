@@ -1,10 +1,12 @@
 package com.example.tastysphere_api.controller;
+
+import com.example.tastysphere_api.dto.CustomUserDetails;
 import com.example.tastysphere_api.dto.request.UserLoginRequest;
 import com.example.tastysphere_api.dto.request.UserRegisterRequest;
+import com.example.tastysphere_api.entity.Role;
 import com.example.tastysphere_api.entity.User;
 import com.example.tastysphere_api.security.JwtTokenProvider;
 import com.example.tastysphere_api.service.UserService;
-import org.hibernate.engine.spi.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,10 +14,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -44,8 +50,11 @@ public class AuthController {
                             loginRequest.getPassword()
                     )
             );
+            Object principal = authentication.getPrincipal();
+            CustomUserDetails userDetails = (CustomUserDetails) principal;
+            List<Role> list = userDetails.getroles();
             // 认证成功后生成 JWT Token
-            String token = tokenProvider.generateToken(authentication.getName());
+            String token = tokenProvider.generateToken(authentication.getName(), list);
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             return ResponseEntity.ok(response);
@@ -79,5 +88,12 @@ public class AuthController {
         user.setActive(true);
         userService.createUser(user);
         return ResponseEntity.ok("注册成功");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser() {
+        // 注销token
+
+        return ResponseEntity.ok("登出成功");
     }
 }

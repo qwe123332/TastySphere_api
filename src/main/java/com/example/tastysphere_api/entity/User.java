@@ -1,10 +1,13 @@
 package com.example.tastysphere_api.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -12,6 +15,7 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+//用户基础信息，包含社交属性（粉丝数、关注数）和发布的帖子数
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,11 +48,15 @@ public class User {
     @Column(name = "is_active")
     private boolean active = true;
 
-    public User(String username, String password, Set<Role> roles) {
-        this.username = username;
-        this.password = password;
-        this.roles = roles;
-    }
+// * 连接表名为 user_roles，连接列为 user_id 和 role_id。
+// */
+@ManyToMany(fetch = FetchType.EAGER)
+@JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+)
+private List<Role> roles = new ArrayList<>();
 
 /**
  * 定义 User 和 Role 实体之间的多对多关系。/**
@@ -58,15 +66,11 @@ public class User {
  protected void onUpdate() {
      this.updatedTime = LocalDateTime.now();
  }
-// * 连接表名为 user_roles，连接列为 user_id 和 role_id。
-// */
-@ManyToMany(fetch = FetchType.EAGER)
-@JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
-)
-private Set<Role> roles = new HashSet<>();
+    public User(String username, String password, List<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
 
 
 

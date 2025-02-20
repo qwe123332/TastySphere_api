@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -28,20 +29,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
         try {
-            String jwt = getJwtFromRequest(request);
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                String username = tokenProvider.getUsernameFromJWT(jwt);
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+            String token = JwtUtils.extractToken(request); // 提取 Token
+            if (token != null && tokenProvider.validateToken(token)) { // 验证 Token
+                String username = tokenProvider.getUsernameFromJWT(token); // 获取用户名
+                List<String> roles = tokenProvider.getRolesFromJWT(token); // 获取角色信息
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username); // 加载用户详情
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                // 将认证信息写入 SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication); // 设置认证上下文
             }
         } catch (Exception ex) {
-            logger.error("无法设置用户认证信息", ex);
+            logger.error("无法设置用户认证信息", ex); // 记录错误日志
         }
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response); // 继续过滤器链
     }
 
     // 从请求头中提取 JWT Token（要求格式为 "Bearer token"）

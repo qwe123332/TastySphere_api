@@ -79,8 +79,15 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setAvatar(userDTO.getAvatar());
-        
+        // 更新头像
+        //去除url前缀
+        if (userDTO.getAvatar() != null) {
+            //只保留相对路径
+            String avatarUrl = userDTO.getAvatar();
+            String fileName = avatarUrl.substring(avatarUrl.lastIndexOf('/') + 1);
+            System.out.println(fileName); // 输出: avatar_15.jpg
+            user.setAvatar(fileName);
+        }
         User updatedUser = userRepository.save(user);
         return convertToDTO(updatedUser);
     }

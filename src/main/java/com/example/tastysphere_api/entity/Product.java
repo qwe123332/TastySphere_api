@@ -15,6 +15,7 @@ import java.security.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//关联的菜品或商品信息
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

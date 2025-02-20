@@ -14,6 +14,7 @@ import java.security.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//被标记的餐厅或商家，关联地理位置信息
 public class Merchant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,11 +2,13 @@ package com.example.tastysphere_api.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "audit_logs")
 @Data
+//审计日志，记录管理员操作
 public class AuditLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

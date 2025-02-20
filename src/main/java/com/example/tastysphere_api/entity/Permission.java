@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//细粒度权限控制
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
