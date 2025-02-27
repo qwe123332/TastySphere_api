@@ -2,9 +2,9 @@ package com.example.tastysphere_api.controller;
 
 import com.example.tastysphere_api.dto.CommentDTO;
 import com.example.tastysphere_api.dto.CustomUserDetails;
+import com.example.tastysphere_api.dto.mapper.CommentMapper;
 import com.example.tastysphere_api.entity.Comment;
 import com.example.tastysphere_api.entity.User;
-import com.example.tastysphere_api.mapper.CommentMapper;
 import com.example.tastysphere_api.service.SensitiveWordService;
 import com.example.tastysphere_api.service.SocialService;
 import com.example.tastysphere_api.service.UserService;

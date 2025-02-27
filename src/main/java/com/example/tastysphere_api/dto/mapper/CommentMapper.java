@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-
 public interface CommentMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "parentCommentId", source = "parentComment.id")
