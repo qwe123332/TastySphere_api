@@ -1,4 +1,5 @@
 package com.example.tastysphere_api.repository;
+
 import com.example.tastysphere_api.entity.Post;
 import com.example.tastysphere_api.entity.Post.Visibility;
 import com.example.tastysphere_api.entity.User;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -57,6 +59,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByAuditedTrueAndApprovedTrue(Pageable pageable);
     
     // 获取待审核的帖子
+    @Query("SELECT p FROM Post p WHERE p.audited = false")
     Page<Post> findByAuditedFalse(Pageable pageable);
     
     // 获取某个用户的已审核通过的帖子

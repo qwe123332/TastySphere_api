@@ -1,11 +1,15 @@
 package com.example.tastysphere_api.service;
 
+import com.example.tastysphere_api.entity.AuditLog;
 import com.example.tastysphere_api.entity.Post;
 import com.example.tastysphere_api.entity.User;
-import com.example.tastysphere_api.entity.AuditLog;
+import com.example.tastysphere_api.exception.BusinessException;
+import com.example.tastysphere_api.exception.ResourceNotFoundException;
+import com.example.tastysphere_api.repository.AuditLogRepository;
 import com.example.tastysphere_api.repository.PostRepository;
 import com.example.tastysphere_api.repository.UserRepository;
-import com.example.tastysphere_api.repository.AuditLogRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,18 +17,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.example.tastysphere_api.exception.BusinessException;
-import com.example.tastysphere_api.exception.ResourceNotFoundException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminService {
@@ -46,8 +46,12 @@ public class AdminService {
     public Map<String, Object> getSystemStatistics() {
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalUsers", userRepository.count());
+        System.out.println("totalUsers: " + userRepository.count());
+
         stats.put("totalPosts", postRepository.count());
+        System.out.println("totalPosts: " + postRepository.count());
         stats.put("activeUsers", userRepository.countByActive(true));
+        System.out.println("activeUsers: " + userRepository.countByActive(true));
         // 添加更多统计数据
         return stats;
     }
@@ -174,6 +178,14 @@ public class AdminService {
     }
 
     public Page<Post> getPendingPosts(Pageable pageable) {
+        Page<Post> byAuditedFalse = postRepository.findByAuditedFalse(pageable);
+        //打印出来byAuditedFalse
+        List<Post> list = byAuditedFalse.getContent();
+        byAuditedFalse.forEach(System.out::println);
+
+
+
+
         return postRepository.findByAuditedFalse(pageable);
     }
 } 

@@ -1,22 +1,21 @@
 package com.example.tastysphere_api.controller;
 
 import com.example.tastysphere_api.dto.CustomUserDetails;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.Map;
+import com.example.tastysphere_api.entity.AuditLog;
+import com.example.tastysphere_api.entity.Post;
+import com.example.tastysphere_api.entity.User;
 import com.example.tastysphere_api.service.AdminService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import com.example.tastysphere_api.entity.AuditLog;
-import com.example.tastysphere_api.entity.User;
-import com.example.tastysphere_api.entity.Post;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
-@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
     
     @Autowired
