@@ -7,7 +7,14 @@ import com.example.tastysphere_api.entity.Role;
 import com.example.tastysphere_api.entity.User;
 import com.example.tastysphere_api.security.JwtTokenProvider;
 import com.example.tastysphere_api.service.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,9 +26,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,7 +48,11 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
+    @Value("${jwt.secret}") // 从配置读取密钥
+    private String jwtSecret;
     @GetMapping("/check")
     public ResponseEntity<?> checkAuth() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -112,9 +125,49 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logoutUser() {
-        // 注销token
+    public ResponseEntity<?> logoutUser(HttpServletRequest request) {
 
-        return ResponseEntity.ok("登出成功");
+        // 1. 从请求头中获取JWT令牌
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.badRequest().body("缺少有效的Authorization头");
+        }
+
+        String token = authHeader.substring(7); // 去掉"Bearer "前缀
+
+        try {
+            // 2. 解析令牌获取声明信息（包括过期时间）
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(jwtSecret) // 使用你的密钥
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // 3. 计算剩余有效时间
+            Date expiration = claims.getExpiration();
+            long currentTimeMillis = System.currentTimeMillis();
+            long ttl = expiration.getTime() - currentTimeMillis;
+
+            // 4. 将令牌加入黑名单（使用Redis存储）
+            if (ttl > 0) {
+                redisTemplate.opsForValue().set(
+                        token,
+                        "invalidated",
+                        ttl,
+                        TimeUnit.MILLISECONDS
+                );
+            }
+
+            // 5. 清理安全上下文
+            SecurityContextHolder.clearContext();
+
+            return ResponseEntity.ok("登出成功");
+        } catch (ExpiredJwtException ex) {
+            // 令牌已过期的情况处理
+            return ResponseEntity.status(401).body("令牌已过期");
+        } catch (JwtException | IllegalArgumentException ex) {
+            // 无效令牌的情况处理
+            return ResponseEntity.badRequest().body("无效令牌");
+        }
     }
 }

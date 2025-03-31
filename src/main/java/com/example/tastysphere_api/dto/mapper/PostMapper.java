@@ -1,9 +1,9 @@
 package com.example.tastysphere_api.dto.mapper;
 
-import com.example.tastysphere_api.dto.PostDTO;
 import com.example.tastysphere_api.dto.CommentDTO;
-import com.example.tastysphere_api.entity.Post;
+import com.example.tastysphere_api.dto.PostDTO;
 import com.example.tastysphere_api.entity.Comment;
+import com.example.tastysphere_api.entity.Post;
 import org.mapstruct.*;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public interface PostMapper {
     @Mapping(target = "userAvatar", source = "user.avatar")
     @Mapping(target = "content", source = "content")
     @Mapping(target = "commentCount", expression = "java(post.getComments() != null ? post.getComments().size() : 0)")
-    @Mapping(target = "isLiked", ignore = true)  // Set in service layer
+    @Mapping(target = "isLiked", ignore = true, expression = "java()")  // Set in service layer
     @Mapping(target = "isMine", ignore = true)   // Set in service layer
     @Mapping(target = "images",expression = "java(FormatUrl(post))") // Set in service layer
     @Mapping(target = "commentDTOs", source = "comments", qualifiedByName = "mapComments") // Ensure comments are mapped correctly
